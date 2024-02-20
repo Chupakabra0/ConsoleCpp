@@ -1,0 +1,4 @@
+/mnt/d/DevProjects/ConsoleCpp/CMakeFiles/ConsoleCppApplication.dir
+/mnt/d/DevProjects/ConsoleCpp/CMakeFiles/ConsoleCppStatic.dir
+/mnt/d/DevProjects/ConsoleCpp/CMakeFiles/edit_cache.dir
+/mnt/d/DevProjects/ConsoleCpp/CMakeFiles/rebuild_cache.dir
