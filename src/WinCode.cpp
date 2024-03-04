@@ -37,7 +37,7 @@ namespace console_cpp {
 
             // process keyboard input
             if (inputRecord.EventType == KEY_EVENT && inputRecord.Event.KeyEvent.bKeyDown) {
-                const auto virtualKeyCode = inputRecord.Event.KEvent.wVirtualKeyCode;
+                const auto virtualKeyCode = inputRecord.Event.KeyEvent.wVirtualKeyCode;
 
                 // numpad processing
                 if (!(inputRecord.Event.KeyEvent.dwControlKeyState & ENHANCED_KEY)) {
