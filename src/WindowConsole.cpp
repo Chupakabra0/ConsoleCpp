@@ -1,5 +1,7 @@
 #include "WindowConsole.hpp"
 #include "WindowConsole.hpp"
+#include "WindowConsole.hpp"
+#include "WindowConsole.hpp"
 
 #include "Print.hpp"
 #include "Utils.hpp"
@@ -10,13 +12,14 @@ namespace console_cpp {
         this->buffer_->clear();
         PrintUnicode_(this->out_, AddCsiSymbol("H") + AddCsiSymbol("J") + AddCsiSymbol("H"));
 
-        this->x_ = 0;
-        this->y_ = 0;
+        this->cursorX_ = 0;
+        this->cursorY_ = 0;
     }
 
     auto WindowConsole::DisplayBuffer() -> void {
         PrintUnicode_(this->out_, *this->buffer_);
         this->buffer_->clear();
+        // TODO: move pointer
     }
 
     auto WindowConsole::LaunchAlterScreen() -> void {
@@ -46,163 +49,189 @@ namespace console_cpp {
     }
 
     auto WindowConsole::CursorMoveToHomePosition() -> void {
-        this->x_ = 0;
-        this->y_ = 0;
+        this->cursorX_ = this->positionX_;
+        this->cursorY_ = this->positionY_;
 
         this->UpdateCursorPosition_();
     }
 
     auto WindowConsole::CursorMoveUp(size_t y) -> void {
-        if (this->y_ < y) {
-            this->y_ = 0;
+        if (this->cursorY_ <= this->positionY_ + y) {
+            this->cursorY_ = this->positionY_;
         }
         else {
-            this->y_ -= y;
+            this->cursorY_ -= y;
         }
 
         this->UpdateCursorPosition_();
     }
 
     auto WindowConsole::CursorMoveDown(size_t y) -> void {
-        if (this->y_ + y > this->limitY_) {
-            this->y_ = this->limitY_ - 1;
+        if (this->cursorY_ + y >= this->height_ + this->positionY_) {
+            this->cursorY_ = this->height_ + this->positionY_;
         }
         else {
-            this->y_ += y;
+            this->cursorY_ += y;
         }
 
         this->UpdateCursorPosition_();
     }
 
     auto WindowConsole::CursorMoveRight(size_t x) -> void {
-        if (this->x_ + x > this->limitX_) {
-            this->x_ = this->limitX_ - 1;
+        if (this->cursorX_ + x >= this->width_ + this->positionX_) {
+            this->cursorX_ = this->width_ + this->positionX_;
         }
         else {
-            this->x_ += x;
+            this->cursorX_ += x;
         }
 
         this->UpdateCursorPosition_();
     }
 
     auto WindowConsole::CursorMoveLeft(size_t x) -> void {
-        if (this->x_ < x) {
-            this->x_ = 0;
+        if (this->cursorX_ <= this->positionX_ + x) {
+            this->cursorX_ = this->positionX_;
         }
         else {
-            this->x_ -= x;
+            this->cursorX_ -= x;
         }
 
         this->UpdateCursorPosition_();
     }
+
+    //auto WindowConsole::CursorMoveRightWithOverflow(size_t x) -> void {
+    //    const size_t newX = (this->CursorGetLocalX() + x) % this->width_;
+    //    const size_t addY = (this->CursorGetLocalX() + x) / this->width_;
+
+    //    if (this->cursorY_ + addY >= this->height_ + this->positionY_) {
+    //        //this->cursorX_ = this->width_ + this->positionX_ - 1;
+    //        this->cursorY_ = this->height_ + this->positionY_;
+    //    }
+    //    //else if (this->cursorY_ + newY == this->height_) {
+    //    //    this->cursorX_ = 0;
+    //    //    this->cursorY_ = this->height_;
+    //    //}
+    //    else {
+    //        this->CursorMoveXTo(newX);
+    //        this->CursorMoveDown(addY);
+    //    }
+
+    //    this->UpdateCursorPosition_();
+    //}
 
     auto WindowConsole::CursorMoveRightWithOverflow(size_t x) -> void {
-        const size_t newX = (this->x_ + x) % this->limitX_;
-        const size_t newY = (this->x_ + x) / this->limitX_;
-
-        if (this->y_ + newY > this->limitY_) {
-            this->y_ = this->limitY_;
-        }
-        else if (this->y_ + newY == this->limitY_) {
-            this->x_ = 0;
-            this->y_ = this->limitY_;
-        }
-        else {
-            this->x_ = newX;
-            this->y_ += newY;
+        for (int i = 0; i < x; ++i) {
+            this->CursorMoveRight(1);
+            
+            if (this->CursorGetLocalX() == this->GetWidth()) {
+                this->CursorMoveDown(1);
+                this->CursorMoveXTo(0);
+            }
         }
 
         this->UpdateCursorPosition_();
     }
 
-    auto WindowConsole::CursorMoveLeftWithOverflow(size_t x) -> void {
-        if (this->x_ + this->y_ * this->limitX_ < x) {
-            this->x_ = 0;
-            this->y_ = 0;
-        }
-        else {
-            const size_t newX = (this->x_ + this->y_ * this->limitX_ - x) % this->limitX_;
-            const size_t newY = (this->x_ + this->y_ * this->limitX_ - x) / this->limitX_;
+    //auto WindowConsole::CursorMoveLeftWithOverflow(size_t x) -> void {
+    //    if (this->cursorX_ + this->cursorY_ * this->width_ < x) {
+    //        this->cursorX_ = this->positionX_;
+    //        this->cursorY_ = this->positionY_;
+    //    }
+    //    else {
+    //        const size_t newX = (this->CursorGetLocalX() + this->CursorGetLocalY() * this->width_ - x) % this->width_;
+    //        const size_t newY = (this->CursorGetLocalX() + this->CursorGetLocalY() * this->width_ - x) / this->width_;
 
-            this->x_ = newX; // ????
-            this->y_ = newY; // ????
+    //        this->CursorMoveXTo(newX);
+    //        this->CursorMoveYTo(newY);
+    //    }
+
+    //    this->UpdateCursorPosition_();
+    //}
+
+    auto WindowConsole::CursorMoveLeftWithOverflow(size_t x) -> void {
+        for (int i = 0; i < x; ++i) {
+            const auto temp = this->CursorGetLocalX();
+            this->CursorMoveLeft(1);
+            
+            if (this->CursorGetLocalX() == temp) {
+                this->CursorMoveUp(1);
+                this->CursorMoveXTo(this->GetWidth() - 1);
+            }
         }
 
         this->UpdateCursorPosition_();
     }
 
     auto WindowConsole::CursorMoveDownToBegin(size_t y) -> void {
-        if (this->y_ + y >= this->limitY_) {
-            this->y_ = this->limitY_ - 1;
-        }
-        else {
-            this->y_ += y;
-        }
-
-        this->x_ = 0;
-
+        this->CursorMoveDown(y);
+        this->CursorMoveXTo(0);
         this->UpdateCursorPosition_();
     }
 
     auto WindowConsole::CursorMoveUpToBegin(size_t y) -> void {
-        if (this->y_ < y) {
-            this->y_ = 0;
-        }
-        else {
-            this->y_ -= y;
-        }
-
-        this->x_ = 0;
-
+        this->CursorMoveUp(y);
+        this->CursorMoveXTo(0);
         this->UpdateCursorPosition_();
     }
 
-    auto WindowConsole::GetLimitX() const -> size_t {
-        return this->limitX_;
+    auto WindowConsole::GetWidth() const -> size_t {
+        return this->width_;
     }
 
-    auto WindowConsole::SetLimitX(size_t limitX) -> void {
-        this->limitX_ = limitX;
+    auto WindowConsole::SetWidth(size_t width) -> void {
+        this->width_ = width;
     }
 
-    auto WindowConsole::GetLimitY() const -> size_t {
-        return this->limitY_;
+    auto WindowConsole::GetHeight() const -> size_t {
+        return this->height_;
     }
 
-    auto WindowConsole::SetLimitY(size_t limitY) -> void {
-        this->limitY_ = limitY;
+    auto WindowConsole::SetHeight(size_t height) -> void {
+        this->height_ = height;
     }
 
-    auto WindowConsole::CursorGetX() const -> size_t {
-        return this->x_;
+    auto WindowConsole::CursorGetGlobalX() const -> size_t {
+        return this->cursorX_;
+    }
+
+    auto WindowConsole::CursorGetLocalX() const -> size_t {
+        return this->cursorX_ - this->positionX_;
     }
 
     auto WindowConsole::CursorMoveXTo(size_t x) -> void {
-        if (x >= this->limitX_) {
-            this->x_ = this->limitX_ - 1;
+        if (x >= this->width_) {
+            this->cursorX_ = this->width_ + this->positionX_;
         }
 
-        this->x_ = x;
+        this->cursorX_ = x + this->positionX_;
 
         this->UpdateCursorPosition_();
     }
 
-    auto WindowConsole::CursorGetY() const -> size_t {
-        return this->y_;
+    auto WindowConsole::CursorGetGlobalY() const -> size_t {
+        return this->cursorY_;
+    }
+
+    auto WindowConsole::CursorGetLocalY() const -> size_t {
+        return this->cursorY_ - this->positionY_;
     }
 
     auto WindowConsole::CursorMoveYTo(size_t y) -> void {
-        if (y > this->limitY_) {
-            this->y_ = this->limitY_;
+        if (y >= this->height_) {
+            this->cursorY_ = this->height_ + this->positionY_;
         }
 
-        this->y_ = y;
+        this->cursorY_ = y + this->positionY_;
 
         this->UpdateCursorPosition_();
     }
 
-    auto WindowConsole::CursorGetXY() const -> std::pair<size_t, size_t> {
-        return std::make_pair(this->x_, this->y_);
+    auto WindowConsole::CursorGetGlobalXY() const -> std::pair<size_t, size_t> {
+        return std::make_pair(this->cursorX_, this->cursorY_);
+    }
+
+    auto WindowConsole::CursorGetLocalXY() const -> std::pair<size_t, size_t> {
+        return std::make_pair(this->cursorX_ - this->positionX_, this->cursorY_ - this->positionY_);
     }
 
     auto WindowConsole::CursorMoveXYTo(size_t x, size_t y) -> void {
@@ -210,8 +239,24 @@ namespace console_cpp {
         this->CursorMoveYTo(y);
     }
 
+    auto WindowConsole::GetOutputStream() const -> const std::ostream& {
+        return this->out_.get();
+    }
+
+    auto WindowConsole::GetOutputStream() -> std::ostream& {
+        return this->out_.get();
+    }
+
+    auto WindowConsole::GetPositionX() const -> size_t {
+        return this->positionX_;
+    }
+
+    auto WindowConsole::GetPositionY() const -> size_t {
+        return this->positionY_;
+    }
+
     auto WindowConsole::UpdateCursorPosition_() -> void {
-        this->DisplayStr_(AddCsiSymbol(std::format("{};{}H", this->y_ + 1, this->x_ + 1)));
+        this->DisplayStr_(AddCsiSymbol(std::format("{};{}H", this->cursorY_ + 1, this->cursorX_ + 1)));
     }
 
     auto WindowConsole::DisplayStr_(const std::string& ansi) -> void {
@@ -224,6 +269,8 @@ namespace console_cpp {
     }
 
     auto WindowConsole::DisplayStr_(char32_t chr) -> void {
+        const size_t chrWidth = U32CharWidth_(chr);
+
         if (this->isBufferEnabled_) {
             const char buffer[5]{};
             U32CharToU8Char_(chr, buffer);
@@ -231,10 +278,14 @@ namespace console_cpp {
             *this->buffer_ += buffer;
         }
         else {
+            if (this->CursorGetLocalX() + chrWidth > this->width_) {
+                this->CursorMoveDownToBegin(1);
+            }
+
             PrintUnicode_(this->out_, std::u32string(1, chr));
         }
 
-        this->CursorMoveRightWithOverflow(U32CharWidth_(chr));
+        this->CursorMoveRightWithOverflow(chrWidth);
     }
 
     auto WindowConsole::DisplayStr_(char chr) -> void {

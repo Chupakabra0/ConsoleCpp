@@ -3,11 +3,12 @@
 
 #include <sstream>
 
-#include "include/fmt/ostream.h"
-
 namespace console_cpp {
     std::ostream& PrintUnicode_(std::ostream& out, const std::string& str) {
-        fmt::print(out, "{}", str);
+        std::stringstream ss{};
+
+        ss << str;
+        out << ss.str();
 
         return out;
     }
@@ -16,7 +17,7 @@ namespace console_cpp {
         std::stringstream ss{};
 
         ss << str;
-        fmt::print(out, "{}", ss.str());
+        out << ss.str();
 
         return out;
     }

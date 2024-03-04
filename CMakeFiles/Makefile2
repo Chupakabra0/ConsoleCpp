@@ -65,16 +65,33 @@ CMAKE_BINARY_DIR = /mnt/d/DevProjects/ConsoleCpp
 # The main recursive "all" target.
 all: CMakeFiles/ConsoleCppApplication.dir/all
 all: CMakeFiles/ConsoleCppStatic.dir/all
+all: 3rdparty/fmt/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
-preinstall:
+preinstall: 3rdparty/fmt/preinstall
 .PHONY : preinstall
 
 # The main recursive "clean" target.
 clean: CMakeFiles/ConsoleCppApplication.dir/clean
 clean: CMakeFiles/ConsoleCppStatic.dir/clean
+clean: 3rdparty/fmt/clean
 .PHONY : clean
+
+#=============================================================================
+# Directory level rules for directory 3rdparty/fmt
+
+# Recursive "all" directory target.
+3rdparty/fmt/all: 3rdparty/fmt/CMakeFiles/fmt.dir/all
+.PHONY : 3rdparty/fmt/all
+
+# Recursive "preinstall" directory target.
+3rdparty/fmt/preinstall:
+.PHONY : 3rdparty/fmt/preinstall
+
+# Recursive "clean" directory target.
+3rdparty/fmt/clean: 3rdparty/fmt/CMakeFiles/fmt.dir/clean
+.PHONY : 3rdparty/fmt/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/ConsoleCppApplication.dir
@@ -127,6 +144,32 @@ ConsoleCppStatic: CMakeFiles/ConsoleCppStatic.dir/rule
 CMakeFiles/ConsoleCppStatic.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ConsoleCppStatic.dir/build.make CMakeFiles/ConsoleCppStatic.dir/clean
 .PHONY : CMakeFiles/ConsoleCppStatic.dir/clean
+
+#=============================================================================
+# Target rules for target 3rdparty/fmt/CMakeFiles/fmt.dir
+
+# All Build rule for target.
+3rdparty/fmt/CMakeFiles/fmt.dir/all:
+	$(MAKE) $(MAKESILENT) -f 3rdparty/fmt/CMakeFiles/fmt.dir/build.make 3rdparty/fmt/CMakeFiles/fmt.dir/depend
+	$(MAKE) $(MAKESILENT) -f 3rdparty/fmt/CMakeFiles/fmt.dir/build.make 3rdparty/fmt/CMakeFiles/fmt.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/mnt/d/DevProjects/ConsoleCpp/CMakeFiles --progress-num=15,16,17 "Built target fmt"
+.PHONY : 3rdparty/fmt/CMakeFiles/fmt.dir/all
+
+# Build rule for subdir invocation for target.
+3rdparty/fmt/CMakeFiles/fmt.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/DevProjects/ConsoleCpp/CMakeFiles 3
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 3rdparty/fmt/CMakeFiles/fmt.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/DevProjects/ConsoleCpp/CMakeFiles 0
+.PHONY : 3rdparty/fmt/CMakeFiles/fmt.dir/rule
+
+# Convenience name for target.
+fmt: 3rdparty/fmt/CMakeFiles/fmt.dir/rule
+.PHONY : fmt
+
+# clean rule for target.
+3rdparty/fmt/CMakeFiles/fmt.dir/clean:
+	$(MAKE) $(MAKESILENT) -f 3rdparty/fmt/CMakeFiles/fmt.dir/build.make 3rdparty/fmt/CMakeFiles/fmt.dir/clean
+.PHONY : 3rdparty/fmt/CMakeFiles/fmt.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

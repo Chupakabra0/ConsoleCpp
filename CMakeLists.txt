@@ -72,8 +72,11 @@ endif()
 
 add_compile_definitions(FMT_HEADER_ONLY)
 
-# -------------- TEST LIB ----------------
+# -------------- 3RD PARTY ----------------
 
+add_subdirectory(3rdparty/fmt)
+
+# -------------- TEST LIB ----------------
 
 add_executable(${MY_APP})
 
@@ -83,6 +86,8 @@ target_sources(${MY_APP} PRIVATE
 
 target_include_directories(${MY_APP} PRIVATE
     src/
+    3rdparty/fmt/include
+    3rdparty/widecharwidth/
 )
 
 target_link_directories(${MY_APP} PRIVATE
@@ -141,3 +146,12 @@ else()
         ${LIB_SOURCES}
     )
 endif()
+
+target_include_directories(${MY_STATIC_LIB} PRIVATE
+    3rdparty/widecharwidth/
+    3rdparty/fmt/include/
+)
+
+#target_link_libraries(${MY_STATIC_LIB} PRIVATE
+#    fmt::fmt
+#)

@@ -17,21 +17,12 @@ namespace console_cpp {
         SetConsoleOutputCP(CP_UTF8);
     }
 
-    auto U32CharWidth_(char32_t chr) -> size_t {
-        LCID locale = MAKELCID(MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), SORT_DEFAULT);
-        DWORD flags = LCMAP_FULLWIDTH;
-
-        size_t width = LCMapStringW(locale, flags, &chr, 1, nullptr, 0);
-
-        return width > 0 ? width : 0;
-    }
-
     auto WindowConsole::InitSize_() -> void {
         CONSOLE_SCREEN_BUFFER_INFO csbi{};
         GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
 
-        this->SetLimitX(csbi.dwSize.X);
-        this->SetLimitY(csbi.dwSize.Y);
+        this->width_ = csbi.dwSize.X;
+        this->height_ = csbi.dwSize.Y;
     }
 
     auto WindowConsole::GetKeyPress() -> KeyCode {
@@ -46,7 +37,7 @@ namespace console_cpp {
 
             // process keyboard input
             if (inputRecord.EventType == KEY_EVENT && inputRecord.Event.KeyEvent.bKeyDown) {
-                const auto virtualKeyCode = inputRecord.Event.KeyEvent.wVirtualKeyCode;
+                const auto virtualKeyCode = inputRecord.Event.KEvent.wVirtualKeyCode;
 
                 // numpad processing
                 if (!(inputRecord.Event.KeyEvent.dwControlKeyState & ENHANCED_KEY)) {

@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = -DFMT_HEADER_ONLY
 
-CXX_INCLUDES = 
+CXX_INCLUDES = -I/mnt/d/DevProjects/ConsoleCpp/3rdparty/widecharwidth -I/mnt/d/DevProjects/ConsoleCpp/3rdparty/fmt/include
 
 CXX_FLAGS = -std=c++20
 

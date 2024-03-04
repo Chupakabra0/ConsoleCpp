@@ -299,28 +299,17 @@ CMakeFiles/ConsoleCppApplication.dir/example/Main.cpp.o: example/Main.cpp \
   /usr/include/c++/13/bits/algorithmfwd.h \
   /usr/include/c++/13/bits/stl_heap.h \
   src/Keyboard.hpp \
-  /usr/include/x86_64-linux-gnu/sys/ioctl.h \
-  /usr/include/x86_64-linux-gnu/bits/ioctls.h \
-  /usr/include/x86_64-linux-gnu/asm/ioctls.h \
-  /usr/include/asm-generic/ioctls.h \
-  /usr/include/linux/ioctl.h \
-  /usr/include/x86_64-linux-gnu/asm/ioctl.h \
-  /usr/include/asm-generic/ioctl.h \
-  /usr/include/x86_64-linux-gnu/bits/ioctl-types.h \
-  /usr/include/x86_64-linux-gnu/sys/ttydefaults.h \
-  /usr/include/termios.h \
-  /usr/include/x86_64-linux-gnu/bits/termios.h \
-  /usr/include/x86_64-linux-gnu/bits/termios-struct.h \
-  /usr/include/x86_64-linux-gnu/bits/termios-c_cc.h \
-  /usr/include/x86_64-linux-gnu/bits/termios-c_iflag.h \
-  /usr/include/x86_64-linux-gnu/bits/termios-c_oflag.h \
-  /usr/include/x86_64-linux-gnu/bits/termios-baud.h \
-  /usr/include/x86_64-linux-gnu/bits/termios-c_cflag.h \
-  /usr/include/x86_64-linux-gnu/bits/termios-c_lflag.h \
-  /usr/include/x86_64-linux-gnu/bits/termios-tcflow.h \
-  /usr/include/x86_64-linux-gnu/bits/termios-misc.h \
   src/Delim.hpp \
   src/Utils.hpp \
+  3rdparty/widecharwidth/widecharwidth/widechar_width.h \
+  /usr/include/c++/13/algorithm \
+  /usr/include/c++/13/bits/ranges_algo.h \
+  /usr/include/c++/13/pstl/glue_algorithm_defs.h \
+  /usr/include/c++/13/iterator \
+  /usr/include/c++/13/bits/stream_iterator.h \
+  /usr/include/c++/13/cstring \
+  /usr/include/string.h \
+  /usr/include/strings.h \
   /usr/include/c++/13/format \
   /usr/include/c++/13/charconv \
   /usr/include/c++/13/locale \
@@ -370,6 +359,16 @@ src/ForegroundColor.hpp:
 
 /usr/include/c++/13/format:
 
+/usr/include/strings.h:
+
+/usr/include/string.h:
+
+/usr/include/c++/13/cstring:
+
+/usr/include/c++/13/pstl/glue_algorithm_defs.h:
+
+/usr/include/c++/13/algorithm:
+
 /usr/include/c++/13/ctime:
 
 src/Utils.hpp:
@@ -378,28 +377,6 @@ src/BackgroundColor.hpp:
 
 src/Delim.hpp:
 
-/usr/include/x86_64-linux-gnu/bits/termios-misc.h:
-
-/usr/include/x86_64-linux-gnu/bits/termios-c_lflag.h:
-
-/usr/include/x86_64-linux-gnu/bits/termios-baud.h:
-
-/usr/include/x86_64-linux-gnu/bits/termios-c_iflag.h:
-
-/usr/include/x86_64-linux-gnu/bits/termios.h:
-
-/usr/include/termios.h:
-
-/usr/include/asm-generic/ioctl.h:
-
-/usr/include/x86_64-linux-gnu/asm/ioctl.h:
-
-/usr/include/asm-generic/ioctls.h:
-
-/usr/include/x86_64-linux-gnu/asm/ioctls.h:
-
-/usr/include/x86_64-linux-gnu/bits/ioctls.h:
-
 src/Keyboard.hpp:
 
 /usr/include/c++/13/bits/stl_heap.h:
@@ -407,8 +384,6 @@ src/Keyboard.hpp:
 /usr/include/c++/13/bits/stl_algo.h:
 
 /usr/include/c++/13/array:
-
-/usr/include/x86_64-linux-gnu/bits/termios-c_oflag.h:
 
 /usr/include/c++/13/bits/erase_if.h:
 
@@ -432,8 +407,6 @@ src/ConsoleMode.hpp:
 
 /usr/include/x86_64-linux-gnu/asm/unistd_64.h:
 
-/usr/include/x86_64-linux-gnu/sys/ioctl.h:
-
 /usr/include/syscall.h:
 
 /usr/include/linux/close_range.h:
@@ -448,6 +421,8 @@ src/ConsoleMode.hpp:
 
 /usr/include/unistd.h:
 
+/usr/include/c++/13/bits/stream_iterator.h:
+
 /usr/include/x86_64-linux-gnu/bits/uio_lim.h:
 
 /usr/include/x86_64-linux-gnu/bits/xopen_lim.h:
@@ -459,6 +434,8 @@ src/ConsoleMode.hpp:
 /usr/include/linux/limits.h:
 
 /usr/include/x86_64-linux-gnu/bits/local_lim.h:
+
+/usr/include/c++/13/bits/ranges_algo.h:
 
 /usr/include/c++/13/bits/invoke.h:
 
@@ -528,8 +505,6 @@ src/ConsoleMode.hpp:
 
 /usr/include/locale.h:
 
-/usr/include/x86_64-linux-gnu/bits/termios-struct.h:
-
 /usr/include/x86_64-linux-gnu/bits/types/time_t.h:
 
 /usr/include/c++/13/bits/stl_numeric.h:
@@ -544,7 +519,7 @@ src/ConsoleMode.hpp:
 
 /usr/include/c++/13/tr1/gamma.tcc:
 
-/usr/include/x86_64-linux-gnu/bits/termios-c_cflag.h:
+/usr/include/c++/13/iterator:
 
 /usr/include/c++/13/bits/ios_base.h:
 
@@ -552,13 +527,9 @@ src/ConsoleMode.hpp:
 
 /usr/include/x86_64-linux-gnu/bits/endianness.h:
 
-/usr/include/x86_64-linux-gnu/bits/termios-tcflow.h:
-
 /usr/include/c++/13/bits/basic_string.h:
 
 /usr/include/c++/13/tr1/poly_laguerre.tcc:
-
-/usr/include/x86_64-linux-gnu/bits/termios-c_cc.h:
 
 /usr/include/x86_64-linux-gnu/bits/endian.h:
 
@@ -623,8 +594,6 @@ src/ConsoleMode.hpp:
 /usr/include/x86_64-linux-gnu/bits/wordsize.h:
 
 /usr/include/c++/13/ios:
-
-/usr/include/linux/ioctl.h:
 
 /usr/include/c++/13/typeinfo:
 
@@ -852,8 +821,6 @@ example/Main.cpp:
 
 /usr/include/x86_64-linux-gnu/bits/waitflags.h:
 
-/usr/include/x86_64-linux-gnu/bits/ioctl-types.h:
-
 /usr/include/c++/13/bits/align.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/mbstate_t.h:
@@ -934,8 +901,6 @@ example/Main.cpp:
 
 /usr/include/c++/13/istream:
 
-/usr/include/x86_64-linux-gnu/sys/ttydefaults.h:
-
 /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:
 
 /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h:
@@ -961,6 +926,8 @@ src/Font.hpp:
 /usr/include/c++/13/bits/streambuf.tcc:
 
 /usr/include/c++/13/bits/specfun.h:
+
+3rdparty/widecharwidth/widecharwidth/widechar_width.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/wint_t.h:
 

@@ -35,7 +35,7 @@ auto TestFormating() -> void {
     console.PrintLine("FUCK", console_cpp::Font::Strikethrough(), console_cpp::ForegroundColor::IndexColor(distrInt(mt)), console_cpp::BackgroundColor::IndexColor(distrInt(mt)));
     console.PrintLine("FUCK", console_cpp::Font::Underline(), console_cpp::ForegroundColor::IndexColor(distrInt(mt)), console_cpp::BackgroundColor::IndexColor(distrInt(mt)));
 
-    console.PrintLine(std::string(console.GetLimitX(), '-'));
+    console.PrintLine(std::string(console.GetWidth(), '-'));
 
     console.PrintLine("FUCK", console_cpp::Font::Blinking(), console_cpp::ForegroundColor::TrueColor(distrInt(mt), distrInt(mt), distrInt(mt)), console_cpp::BackgroundColor::TrueColor(distrInt(mt), distrInt(mt), distrInt(mt)));
     console.PrintLine("FUCK", console_cpp::Font::Bold(), console_cpp::ForegroundColor::TrueColor(distrInt(mt), distrInt(mt), distrInt(mt)), console_cpp::BackgroundColor::TrueColor(distrInt(mt), distrInt(mt), distrInt(mt)));
@@ -159,6 +159,9 @@ auto MoveCursorTest() -> void {
     console.PrintRight("Right");
     console.GetKeyPress();
 
+    console.PrintCenter("F1234567890vKsDx1R4hEJfGnQY9B8b0pM3U2wXcAaLlPzZyYqQrRoOdDmMiIjJtTsSkKgGhHuUvVcCeEaAqQbBxXnNmMfFjJrRlLwWpPeEqQzZ1234567890F");
+    console.GetKeyPress();
+
     console.ClearScreen();
 }
 
@@ -190,7 +193,13 @@ auto BufferTest() -> void {
 }
 
 auto KeyboardTest() -> void {
-    // TODO!!!!
+    console_cpp::WindowConsole console(
+        std::cout
+    );
+
+    while (true) {
+        console.GetKeyPress();
+    }
 }
 
 auto AlignTest() -> void {
@@ -210,29 +219,42 @@ auto AlignTest() -> void {
 auto WindowTest() -> void {
     console_cpp::WindowConsole console(
         std::cout,
-        console_cpp::ConsoleAttributes::HideCursor(),
+        //console_cpp::ConsoleAttributes::HideCursor(),
         console_cpp::ConsoleAttributes::EnableAlterScreen()
     );
 
-    console_cpp::Subwindow subwindow(0, 0, 20, 10, console, console_cpp::DelimStyle::RoundedLine());
+    console_cpp::Subwindow subwindow1(console, 113, 0, 5, 8, console_cpp::DelimStyle::RoundedLine());
+    subwindow1.PrintWindow();
+    subwindow1.Print(U"FUCK YOU Бич сасай кирпич");
 
-    subwindow.PrintWindow();
-    console.Print(U"Моё window 💘💘💘🖖💘");
+    console_cpp::Subwindow subwindow2(console, 114, 10, 5, 8, console_cpp::DelimStyle::RoundedLine());
+    subwindow2.PrintWindow();
+    subwindow2.Print(U"FUCK YOU Бич сасай кирпич");
+
+    console_cpp::Subwindow subwindow3(console, 117, 20, 5, 8, console_cpp::DelimStyle::RoundedLine());
+    subwindow3.PrintWindow();
+    subwindow3.Print(U"FUCK YOU Бич сасай кирпич");
+
+    console_cpp::Subwindow subwindow4(console, 50, 25, 5, 8, console_cpp::DelimStyle::RoundedLine());
+    subwindow4.PrintWindow();
+    subwindow4.Print(U"FUCK YOU Бич сасай кирпич");
+
+    console_cpp::Subwindow subwindow5(console, 0, 0, 10, 3, console_cpp::DelimStyle::RoundedLine());
+    subwindow5.PrintWindow();
+    subwindow5.Print(U"FUCK YOU Бич сасай кирпич");
+
+    console_cpp::Subwindow subwindow6(console, 0, 0, 10, 3, console_cpp::DelimStyle::RoundedLine());
+    subwindow6.PrintWindow();
+    subwindow6.Print(U"FUCK YOU Бич сасай кирпич");
+
+    console_cpp::Subwindow subwindow7(console, 20, 10, 6, 3, console_cpp::DelimStyle::RoundedLine());
+    subwindow7.PrintWindow();
+    subwindow7.Print(U"FUCK YOU Бич сасай кирпич");
 
     console.GetKeyPress();
 }
 
-//int main() {
-//    WindowTest();
-//    return EXIT_SUCCESS;
-//}
-
-#include <iostream>
-#include <clocale>
-#include <wchar.h>
-
 int main() {
-    std::cout << std::format("{}", "🛡") << std::endl;
-
-    return 0;
+    KeyboardTest();
+    return EXIT_SUCCESS;
 }
