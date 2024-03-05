@@ -4,39 +4,61 @@
 #include <termios.h>
 
 #include "WindowConsole.hpp"
+#include "Helpers.hpp"
 
 namespace console_cpp {
-    class TerminalModeWrapper {
+    class RawTerminalModeWrapper {
     public:
-        explicit TerminalModeWrapper() {
-            tcgetattr(STDIN_FILENO, &this->original_settings_);
-
-            // Set terminal to raw mode
-            termios new_settings = this->original_settings_;
+        explicit RawTerminalModeWrapper() {
+            tcgetattr(STDIN_FILENO, &this->originalSettings_);
+            termios new_settings = this->originalSettings_;
             new_settings.c_lflag &= ~(ICANON | ECHO);
             tcsetattr(STDIN_FILENO, TCSANOW, &new_settings);
         }
 
-        TerminalModeWrapper(const TerminalModeWrapper&) = delete;
+        RawTerminalModeWrapper(const RawTerminalModeWrapper&) = delete;
 
-        TerminalModeWrapper(TerminalModeWrapper&&) = delete;
+        RawTerminalModeWrapper(RawTerminalModeWrapper&&) = delete;
 
-        TerminalModeWrapper& operator=(const TerminalModeWrapper&) = delete;
+        RawTerminalModeWrapper& operator=(const RawTerminalModeWrapper&) = delete;
 
-        TerminalModeWrapper& operator=(TerminalModeWrapper&&) = delete;
+        RawTerminalModeWrapper& operator=(RawTerminalModeWrapper&&) = delete;
 
-        ~TerminalModeWrapper() {
-            tcsetattr(STDIN_FILENO, TCSANOW, &this->original_settings_);
+        ~RawTerminalModeWrapper() {
+            tcsetattr(STDIN_FILENO, TCSANOW, &this->originalSettings_);
         }
 
     private:
-        termios original_settings_{};
+        termios originalSettings_{};
+    };
+
+    class StdinNullBufferModeWrapper {
+    public:
+        explicit StdinNullBufferModeWrapper()
+            : originalBuffer_(*std::cin.rdbuf())  {
+            setvbuf(stdin, nullptr, _IONBF, 0);
+        }
+
+        StdinNullBufferModeWrapper(const StdinNullBufferModeWrapper&) = delete;
+
+        StdinNullBufferModeWrapper(StdinNullBufferModeWrapper&&) = delete;
+
+        StdinNullBufferModeWrapper& operator=(const StdinNullBufferModeWrapper&) = delete;
+
+        StdinNullBufferModeWrapper& operator=(StdinNullBufferModeWrapper&&) = delete;
+
+        ~StdinNullBufferModeWrapper() {
+            std::cin.rdbuf(&this->originalBuffer_.get());
+        }
+
+    private:
+        std::reference_wrapper<std::streambuf> originalBuffer_;
     };
 
     auto IsCursorVisible_() -> bool {
-        std::cout << "\x1b[?25$p" << std::flush;
+        std::cout << AddCsiSymbol("?25$p") << std::flush;
 
-        const TerminalModeWrapper terminalModeWrapper{};
+        const RawTerminalModeWrapper terminalModeWrapper{};
 
         char response[10]{};
         std::cin.read(response, 9);
@@ -81,23 +103,55 @@ namespace console_cpp {
         return static_cast<T1>((val & 0b01111111'00000000'00000000'00000000) >> 24);
     }
 
-    auto GetUTF8Input() -> std::vector<unsigned char> {
+    auto khbit() -> int {
+        const RawTerminalModeWrapper rawTerminalModeWrapper{};
+        const StdinNullBufferModeWrapper stdinNullBufferModeWrapper{};
+
+        int bytesWaiting{};
+        ioctl(STDIN_FILENO, FIONREAD, &bytesWaiting);
+
+        return bytesWaiting;
+    }
+
+    enum class InputType : int {
+        UTF8_INPUT,
+        ESC_SEQUENCE,
+        CSI_SEQUENCE
+    };
+
+    auto GetUTF8Input() -> std::pair<std::vector<unsigned char>, InputType> {
         std::vector<unsigned char> result{};
 
         result.emplace_back(getchar());
 
-        // TODO: handle arrow keys
-        if (result.front() > 193) {
-            result.emplace_back(getchar());
-        }
-        if (result.front() > 223) {
-            result.emplace_back(getchar());
-        }
-        if (result.front() > 239) {
+        while (khbit() != 0) {
             result.emplace_back(getchar());
         }
 
-        return result;
+        std::clog << static_cast<unsigned>(result.front());
+        for (int i = 1; i < result.size(); ++i) {
+            std::clog << ", " << static_cast<unsigned>(result[i]);
+        }
+        std::clog << std::endl;
+
+        if (result.size() > 1 && *result.begin() == ESC_SYMBOL) {
+            return result.size() > 2 && *std::next(result.begin()) == '[' ?
+                   std::make_pair(std::vector(std::next(result.begin(), 2), result.end()), InputType::CSI_SEQUENCE) :
+                   std::make_pair(std::vector(std::next(result.begin()), result.end()), InputType::ESC_SEQUENCE);
+        }
+
+//        // TODO: handle arrow keys
+//        if (result.front() > 193) {
+//            result.emplace_back(getchar());
+//        }
+//        if (result.front() > 223) {
+//            result.emplace_back(getchar());
+//        }
+//        if (result.front() > 239) {
+//            result.emplace_back(getchar());
+//        }
+
+        return std::make_pair(result, InputType::UTF8_INPUT);
     }
 
     auto ConvertUTF8DecBytesToDec(const std::vector<unsigned char>& utf8Bytes) -> unsigned {
@@ -175,6 +229,9 @@ namespace console_cpp {
 
         // TODO: ru/ua layouts
         switch (character) {
+            case U'\x1b': {
+                return KeyCode::ESCAPE;
+            }
             case U'`': case U'~': {
                 return KeyCode::OEM_3;
             }
@@ -214,7 +271,7 @@ namespace console_cpp {
             case U'=': case U'+': {
                 return KeyCode::OEM_PLUS;
             }
-            case U'\b': {
+            case U'\b': case U'\x7f': {
                 return KeyCode::BACK;
             }
             case U'\t': {
@@ -339,21 +396,273 @@ namespace console_cpp {
             // MENU IS ABSENT
             // LEFT CTRL IS ABSENT
             // TODO numpad
-            // TODO arrows
+            case 46785u: {
+                return KeyCode::UP;
+            }
+            case 46786u: {
+                return KeyCode::DOWN;
+            }
+            case 46787u: {
+                return KeyCode::RIGHT;
+            }
+            case 46788u: {
+                return KeyCode::LEFT;
+            }
+            case 46789u: {
+                return KeyCode::NUMPAD5;
+            }
+            case 46790u: {
+                return KeyCode::END;
+            }
+            case 3677347262u: {
+                return KeyCode::PGDN;
+            }
+            case 46792u: {
+                return KeyCode::HOME;
+            }
+            case 3677347198u: {
+                return KeyCode::PGUP;
+            }
+            case 3677347006u: {
+                return KeyCode::INSERT;
+            }
+            case 3677347070u: {
+                return KeyCode::DEL;
+            }
+            case 46032u: {
+                return KeyCode::F1;
+            }
+            case 46033u: {
+                return KeyCode::F2;
+            }
+            case 46034u: {
+                return KeyCode::F3;
+            }
+            case 46035u: {
+                return KeyCode::F4;
+            }
             default: {
+//                throw std::runtime_error("Unknown utf-8 input");
                 return keyCode;
             }
         }
     }
 
+    auto ConvertEscSequenceToKeyCode(const std::vector<unsigned char>& bytes) -> KeyCode {
+        auto keyCode = KeyCode::UNKNOWN;
+
+        if (bytes.empty()) {
+            return keyCode;
+        }
+
+        switch (bytes.front()) {
+            case 79: {
+                if (bytes.size() > 1) {
+                    switch (*std::next(bytes.begin())) {
+                        case 80: {
+                            keyCode = KeyCode::F1;
+                            break;
+                        }
+                        case 81: {
+                            keyCode = KeyCode::F2;
+                            break;
+                        }
+                        case 82: {
+                            keyCode = KeyCode::F3;
+                            break;
+                        }
+                        case 83: {
+                            keyCode = KeyCode::F4;
+                            break;
+                        }
+                        default: {
+                            break;
+                        }
+                    }
+                }
+            }
+            default: {
+                break;
+            }
+        }
+
+        return keyCode;
+    }
+
+    auto ConvertCsiSequenceToKeyCode(const std::vector<unsigned char>& bytes) -> KeyCode {
+        auto keyCode = KeyCode::UNKNOWN;
+
+        if (bytes.empty()) {
+            return keyCode;
+        }
+
+        switch (bytes.front()) {
+            case 65: {
+                keyCode = KeyCode::UP;
+                break;
+            }
+            case 66: {
+                keyCode = KeyCode::DOWN;
+                break;
+            }
+            case 67: {
+                keyCode = KeyCode::RIGHT;
+                break;
+            }
+            case 68: {
+                keyCode = KeyCode::LEFT;
+                break;
+            }
+            case 69: {
+                keyCode = KeyCode::NUMPAD5;
+                break;
+            }
+            case 70: {
+                keyCode = KeyCode::END;
+                break;
+            }
+            case 72: {
+                keyCode = KeyCode::HOME;
+                break;
+            }
+            case 50: {
+                if (bytes.size() > 1) {
+                    if (bytes.size() > 2) {
+                        switch (*std::next(bytes.begin())) {
+                            case 48: {
+                                if (*std::next(bytes.begin(), 2) == 126) {
+                                    keyCode = KeyCode::F9;
+                                }
+                                break;
+                            }
+                            case 49: {
+                                if (*std::next(bytes.begin(), 2) == 126) {
+                                    keyCode = KeyCode::F10;
+                                }
+                                break;
+                            }
+                            case 51: {
+                                if (*std::next(bytes.begin(), 2) == 126) {
+                                    keyCode = KeyCode::F11;
+                                }
+                                break;
+                            }
+                            case 52: {
+                                if (*std::next(bytes.begin(), 2) == 126) {
+                                    keyCode = KeyCode::F12;
+                                }
+                                break;
+                            }
+                            default: {
+                                break;
+                            }
+                        }
+                    }
+                    else if (*std::next(bytes.begin()) == 126) {
+                        keyCode = KeyCode::INSERT;
+                    }
+                }
+
+                break;
+            }
+            case 51: {
+                if (bytes.size() > 1 && *std::next(bytes.begin()) == 126) {
+                    keyCode = KeyCode::DEL;
+                }
+                break;
+            }
+            case 53: {
+                if (bytes.size() > 1 && *std::next(bytes.begin()) == 126) {
+                    keyCode = KeyCode::PGUP;
+                }
+                break;
+            }
+            case 54: {
+                if (bytes.size() > 1 && *std::next(bytes.begin()) == 126) {
+                    keyCode = KeyCode::PGDN;
+                }
+                break;
+            }
+            case 49: {
+                if (bytes.size() > 2) {
+                    switch (*std::next(bytes.begin())) {
+                        case 53: {
+                            if (*std::next(bytes.begin(), 2) == 126) {
+                                keyCode = KeyCode::F5;
+                            }
+                            break;
+                        }
+                        case 55: {
+                            if (*std::next(bytes.begin(), 2) == 126) {
+                                keyCode = KeyCode::F6;
+                            }
+                            break;
+                        }
+                        case 56: {
+                            if (*std::next(bytes.begin(), 2) == 126) {
+                                keyCode = KeyCode::F7;
+                            }
+                            break;
+                        }
+                        case 57: {
+                            if (*std::next(bytes.begin(), 2) == 126) {
+                                keyCode = KeyCode::F8;
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+            default: {
+                break;
+            }
+        }
+
+        return keyCode;
+    }
+
+    auto ConvertInputToKeyCode(const std::pair<std::vector<unsigned char>, InputType>& input) -> KeyCode {
+        auto keyCode = KeyCode::UNKNOWN;
+        const auto& [bytes, inputType] = input;
+
+        switch (inputType) {
+            case InputType::UTF8_INPUT: {
+                const auto character = ConvertUTF8DecToUTF16BEDec(bytes);
+                keyCode = CovertCharacterToKeyCode(character);
+
+                std::cout << character << " = " << static_cast<unsigned>(keyCode) << std::endl;
+
+                break;
+            }
+            case InputType::ESC_SEQUENCE: {
+                keyCode = ConvertEscSequenceToKeyCode(bytes);
+
+                std::cout << "Escape sequence" << " = " << static_cast<unsigned>(keyCode) << std::endl;
+
+
+                break;
+            }
+            case InputType::CSI_SEQUENCE: {
+                keyCode = ConvertCsiSequenceToKeyCode(bytes);
+
+                std::cout << "CSI sequence" << " = " << static_cast<unsigned>(keyCode) << std::endl;
+
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+
+        return keyCode;
+    }
+
     auto WindowConsole::GetKeyPress() -> KeyCode {
-        const TerminalModeWrapper terminalModeWrapper{};
+        const RawTerminalModeWrapper rawTerminalModeWrapper{};
+        const StdinNullBufferModeWrapper stdinNullBufferModeWrapper{};
 
-        const auto utf8Bytes = GetUTF8Input();
-        const auto character = ConvertUTF8DecToUTF16BEDec(utf8Bytes);
-        const auto keyCode   = CovertCharacterToKeyCode(character);
-
-        std::cout << character << " = " << static_cast<int>(character) << std::endl;
+        const auto input = GetUTF8Input();
+        const auto keyCode = ConvertInputToKeyCode(input);
 
         return keyCode;
     }
