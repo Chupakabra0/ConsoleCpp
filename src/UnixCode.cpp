@@ -123,33 +123,24 @@ namespace console_cpp {
         std::vector<unsigned char> result{};
 
         result.emplace_back(getchar());
-
         while (khbit() != 0) {
             result.emplace_back(getchar());
         }
 
-        std::clog << static_cast<unsigned>(result.front());
-        for (int i = 1; i < result.size(); ++i) {
-            std::clog << ", " << static_cast<unsigned>(result[i]);
-        }
-        std::clog << std::endl;
+        //std::clog << static_cast<unsigned>(result.front());
+        //for (int i = 1; i < result.size(); ++i) {
+        //    std::clog << ", " << static_cast<unsigned>(result[i]);
+        //}
+        //std::clog << std::endl;
 
         if (result.size() > 1 && *result.begin() == ESC_SYMBOL) {
-            return result.size() > 2 && *std::next(result.begin()) == '[' ?
-                   std::make_pair(std::vector(std::next(result.begin(), 2), result.end()), InputType::CSI_SEQUENCE) :
-                   std::make_pair(std::vector(std::next(result.begin()), result.end()), InputType::ESC_SEQUENCE);
+            if (result.size() > 2 && *std::next(result.begin()) == '[') {
+                return std::make_pair(std::vector(std::next(result.begin(), 2), result.end()), InputType::CSI_SEQUENCE)
+            }
+            else {
+                return std::make_pair(std::vector(std::next(result.begin()), result.end()), InputType::ESC_SEQUENCE);
+            }
         }
-
-//        // TODO: handle arrow keys
-//        if (result.front() > 193) {
-//            result.emplace_back(getchar());
-//        }
-//        if (result.front() > 223) {
-//            result.emplace_back(getchar());
-//        }
-//        if (result.front() > 239) {
-//            result.emplace_back(getchar());
-//        }
 
         return std::make_pair(result, InputType::UTF8_INPUT);
     }
@@ -395,54 +386,7 @@ namespace console_cpp {
             // RIGHT ALT IS ABSENT
             // MENU IS ABSENT
             // LEFT CTRL IS ABSENT
-            // TODO numpad
-            case 46785u: {
-                return KeyCode::UP;
-            }
-            case 46786u: {
-                return KeyCode::DOWN;
-            }
-            case 46787u: {
-                return KeyCode::RIGHT;
-            }
-            case 46788u: {
-                return KeyCode::LEFT;
-            }
-            case 46789u: {
-                return KeyCode::NUMPAD5;
-            }
-            case 46790u: {
-                return KeyCode::END;
-            }
-            case 3677347262u: {
-                return KeyCode::PGDN;
-            }
-            case 46792u: {
-                return KeyCode::HOME;
-            }
-            case 3677347198u: {
-                return KeyCode::PGUP;
-            }
-            case 3677347006u: {
-                return KeyCode::INSERT;
-            }
-            case 3677347070u: {
-                return KeyCode::DEL;
-            }
-            case 46032u: {
-                return KeyCode::F1;
-            }
-            case 46033u: {
-                return KeyCode::F2;
-            }
-            case 46034u: {
-                return KeyCode::F3;
-            }
-            case 46035u: {
-                return KeyCode::F4;
-            }
             default: {
-//                throw std::runtime_error("Unknown utf-8 input");
                 return keyCode;
             }
         }
