@@ -224,156 +224,156 @@ namespace console_cpp {
                 return KeyCode::ESCAPE;
             }
             case U'`': case U'~': {
-                return KeyCode::OEM_3;
+                return KeyCode::GRAVE_ACCENT;
             }
             case U'1': case U'!': {
-                return KeyCode::KEY_1;
+                return KeyCode::NUM1;
             }
             case U'2': case U'@': {
-                return KeyCode::KEY_2;
+                return KeyCode::NUM2;
             }
             case U'3': case U'#': {
-                return KeyCode::KEY_3;
+                return KeyCode::NUM3;
             }
             case U'4': case U'$': {
-                return KeyCode::KEY_4;
+                return KeyCode::NUM4;
             }
             case U'5': case U'%': {
-                return KeyCode::KEY_5;
+                return KeyCode::NUM5;
             }
             case U'6': case U'^': {
-                return KeyCode::KEY_6;
+                return KeyCode::NUM6;
             }
             case U'7': case U'&': {
-                return KeyCode::KEY_7;
+                return KeyCode::NUM7;
             }
             case U'8': case U'*': {
-                return KeyCode::KEY_8;
+                return KeyCode::NUM8;
             }
             case U'9': case U'(': {
-                return KeyCode::KEY_9;
+                return KeyCode::NUM9;
             }
             case U'0': case U')': {
-                return KeyCode::KEY_0;
+                return KeyCode::NUM0;
             }
             case U'-': case U'_': {
-                return KeyCode::OEM_MINUS;
+                return KeyCode::MINUS;
             }
             case U'=': case U'+': {
-                return KeyCode::OEM_PLUS;
+                return KeyCode::PLUS;
             }
             case U'\b': case U'\x7f': {
-                return KeyCode::BACK;
+                return KeyCode::BACKSPACE;
             }
             case U'\t': {
                 return KeyCode::TAB;
             }
             case U'q': case U'Q': {
-                return KeyCode::KEY_Q;
+                return KeyCode::Q;
             }
             case U'w': case U'W': {
-                return KeyCode::KEY_W;
+                return KeyCode::W;
             }
             case U'e': case U'E': {
-                return KeyCode::KEY_E;
+                return KeyCode::E;
             }
             case U'r': case U'R': {
-                return KeyCode::KEY_R;
+                return KeyCode::R;
             }
             case U't': case U'T': {
-                return KeyCode::KEY_T;
+                return KeyCode::T;
             }
             case U'y': case U'Y': {
-                return KeyCode::KEY_Y;
+                return KeyCode::Y;
             }
             case U'u': case U'U': {
-                return KeyCode::KEY_U;
+                return KeyCode::U;
             }
             case U'i': case U'I': {
-                return KeyCode::KEY_I;
+                return KeyCode::I;
             }
             case U'o': case U'O': {
-                return KeyCode::KEY_O;
+                return KeyCode::O;
             }
             case U'p': case U'P': {
-                return KeyCode::KEY_P;
+                return KeyCode::P;
             }
             case U'[': case U'{': {
-                return KeyCode::OEM_4;
+                return KeyCode::LEFT_BRACKET;
             }
             case U']': case U'}': {
-                return KeyCode::OEM_6;
+                return KeyCode::RIGHT_BRACKET;
             }
             case U'\\': case U'|': {
-                return KeyCode::OEM_5;
+                return KeyCode::BACKSLASH;
             }
             // CAPS LOCK IS ABSENT
             case U'a': case U'A': {
-                return KeyCode::KEY_A;
+                return KeyCode::A
             }
             case U's': case U'S': {
-                return KeyCode::KEY_S;
+                return KeyCode::S;
             }
             case U'd': case U'D': {
-                return KeyCode::KEY_D;
+                return KeyCode::D;
             }
             case U'f': case U'F': {
-                return KeyCode::KEY_F;
+                return KeyCode::F;
             }
             case U'g': case U'G': {
-                return KeyCode::KEY_G;
+                return KeyCode::G;
             }
             case U'h': case U'H': {
-                return KeyCode::KEY_H;
+                return KeyCode::H;
             }
             case U'j': case U'J': {
-                return KeyCode::KEY_J;
+                return KeyCode::J;
             }
             case U'k': case U'K': {
-                return KeyCode::KEY_K;
+                return KeyCode::K;
             }
             case U'l': case U'L': {
-                return KeyCode::KEY_L;
+                return KeyCode::L;
             }
             case U';': case U':': {
-                return KeyCode::OEM_1;
+                return KeyCode::SEMICOLON;
             }
             case U'\'': case U'\"': {
-                return KeyCode::OEM_7;
+                return KeyCode::QUOTE;
             }
             case U'\n': {
                 return KeyCode::ENTER;
             }
             // LEFT SHIFT IS ABSENT
             case U'z': case U'Z': {
-                return KeyCode::KEY_Z;
+                return KeyCode::Z;
             }
             case U'x': case U'X': {
-                return KeyCode::KEY_X;
+                return KeyCode::X;
             }
             case U'c': case U'C': {
-                return KeyCode::KEY_C;
+                return KeyCode::C;
             }
             case U'v': case U'V': {
-                return KeyCode::KEY_V;
+                return KeyCode::V;
             }
             case U'b': case U'B': {
-                return KeyCode::KEY_B;
+                return KeyCode::B;
             }
             case U'n': case U'N': {
-                return KeyCode::KEY_N;
+                return KeyCode::N;
             }
             case U'm': case U'M': {
-                return KeyCode::KEY_M;
+                return KeyCode::M;
             }
             case U',': case U'<': {
-                return KeyCode::OEM_COMMA;
+                return KeyCode::COMMA;
             }
             case U'.': case U'>': {
-                return KeyCode::OEM_PERIOD;
+                return KeyCode::PERIOD;
             }
             case U'/': case U'?': {
-                return KeyCode::OEM_2;
+                return KeyCode::SLASH;
             }
             // RIGHT SHIFT IS ABSENT
             // LEFT CTRL IS ABSENT
@@ -574,14 +574,14 @@ namespace console_cpp {
                 const auto character = ConvertUTF8DecToUTF16BEDec(bytes);
                 keyCode = CovertCharacterToKeyCode(character);
 
-                std::cout << character << " = " << static_cast<unsigned>(keyCode) << std::endl;
+                //std::cout << character << " = " << static_cast<unsigned>(keyCode) << std::endl;
 
                 break;
             }
             case InputType::ESC_SEQUENCE: {
                 keyCode = ConvertEscSequenceToKeyCode(bytes);
 
-                std::cout << "Escape sequence" << " = " << static_cast<unsigned>(keyCode) << std::endl;
+                //std::cout << "Escape sequence" << " = " << static_cast<unsigned>(keyCode) << std::endl;
 
 
                 break;
@@ -589,7 +589,7 @@ namespace console_cpp {
             case InputType::CSI_SEQUENCE: {
                 keyCode = ConvertCsiSequenceToKeyCode(bytes);
 
-                std::cout << "CSI sequence" << " = " << static_cast<unsigned>(keyCode) << std::endl;
+                //std::cout << "CSI sequence" << " = " << static_cast<unsigned>(keyCode) << std::endl;
 
                 break;
             }
