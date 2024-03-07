@@ -15,22 +15,7 @@ namespace console_cpp {
         PAUSE = 19,
         CAPITAL = 20,
 
-        KANA = 21,
-        HANGEUL = 21,
-        HANGUL = 21,
-        IME_ON = 22,
-        JUNJA = 23,
-        FINAL = 24,
-        HANJA = 25,
-        KANJI = 25,
-        IME_OFF = 26,
-
         ESCAPE = 27,
-
-        CONVERT = 28,
-        NONCONVERT = 29,
-        ACCEPT = 30,
-        MODECHANGE = 31,
 
         SPACE = 32,
         PGUP = 33,
@@ -59,7 +44,9 @@ namespace console_cpp {
         NUM7 = 55,
         NUM8 = 56,
         NUM9 = 57,
+
         EQUAL = 61, /* = */
+
         A = 65,
         B = 66,
         C = 67,
@@ -103,12 +90,7 @@ namespace console_cpp {
         NUMPAD7 = 103,
         NUMPAD8 = 104,
         NUMPAD9 = 105,
-        MULTIPLY = 106,
-        ADD = 107,
-        SEPARATOR = 108,
-        SUBTRACT = 109,
-        DECIMAL = 110,
-        DIVIDE = 111,
+
         F1 = 112,
         F2 = 113,
         F3 = 114,
@@ -137,14 +119,6 @@ namespace console_cpp {
         NUMLOCK = 144,
         SCROLL = 145,
 
-        OEM_NEC_EQUAL = 146,
-
-        OEM_FJ_JISHO = 146,
-        OEM_FJ_MASSHOU = 147,
-        OEM_FJ_TOUROKU = 148,
-        OEM_FJ_LOYA = 149,
-        OEM_FJ_ROYA = 150,
-
         LSHIFT = 160,
         RSHIFT = 161,
         LCONTROL = 162,
@@ -168,40 +142,40 @@ namespace console_cpp {
         BACKSLASH = 220,
         RIGHT_BRACKET = 221,
         QUOTE = 222,
-        OEM_8 = 223,
-
-        OEM_AX = 225,
-        OEM_102 = 226,
-        ICO_HELP = 227,
-        ICO_00 = 228,
-
-        PROCESSKEY = 229,
-        ICO_CLEAR = 230,
-
-        PACKET = 231,
-
-        OEM_RESET = 233,
-        OEM_JUMP = 234,
-        OEM_PA1 = 235,
-        OEM_PA2 = 236,
-        OEM_PA3 = 237,
-        OEM_WSCTRL = 238,
-        OEM_CUSEL = 239,
-        OEM_ATTN = 240,
-        OEM_FINISH = 241,
-        OEM_COPY = 242,
-        OEM_AUTO = 243,
-        OEM_ENLW = 244,
-        OEM_BACKTAB = 245,
-
-        ATTN = 246,
-        CRSEL = 247,
-        EXSEL = 248,
-        EREOF = 249,
-        PLAY = 250,
-        ZOOM = 251,
-        NONAME = 252,
-        PA1 = 253,
-        OEM_CLEAR = 254
+//        OEM_8 = 223,
+//
+//        OEM_AX = 225,
+//        OEM_102 = 226,
+//        ICO_HELP = 227,
+//        ICO_00 = 228,
+//
+//        PROCESSKEY = 229,
+//        ICO_CLEAR = 230,
+//
+//        PACKET = 231,
+//
+//        OEM_RESET = 233,
+//        OEM_JUMP = 234,
+//        OEM_PA1 = 235,
+//        OEM_PA2 = 236,
+//        OEM_PA3 = 237,
+//        OEM_WSCTRL = 238,
+//        OEM_CUSEL = 239,
+//        OEM_ATTN = 240,
+//        OEM_FINISH = 241,
+//        OEM_COPY = 242,
+//        OEM_AUTO = 243,
+//        OEM_ENLW = 244,
+//        OEM_BACKTAB = 245,
+//
+//        ATTN = 246,
+//        CRSEL = 247,
+//        EXSEL = 248,
+//        EREOF = 249,
+//        PLAY = 250,
+//        ZOOM = 251,
+//        NONAME = 252,
+//        PA1 = 253,
+//        OEM_CLEAR = 254
     };
 }

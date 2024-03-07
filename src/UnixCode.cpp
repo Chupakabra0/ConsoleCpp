@@ -132,10 +132,9 @@ namespace console_cpp {
         //    std::clog << ", " << static_cast<unsigned>(result[i]);
         //}
         //std::clog << std::endl;
-
-        if (result.size() > 1 && *result.begin() == ESC_SYMBOL) {
-            if (result.size() > 2 && *std::next(result.begin()) == '[') {
-                return std::make_pair(std::vector(std::next(result.begin(), 2), result.end()), InputType::CSI_SEQUENCE)
+        if (result.size() > 1 && (result.front() == ESC_SYMBOL || result.front() == '^')) {
+            if (result.size() > 2 && result[1] == '[') {
+                return std::make_pair(std::vector(std::next(result.begin(), 2), result.end()), InputType::CSI_SEQUENCE);
             }
             else {
                 return std::make_pair(std::vector(std::next(result.begin()), result.end()), InputType::ESC_SEQUENCE);
@@ -309,7 +308,7 @@ namespace console_cpp {
             }
             // CAPS LOCK IS ABSENT
             case U'a': case U'A': {
-                return KeyCode::A
+                return KeyCode::A;
             }
             case U's': case U'S': {
                 return KeyCode::S;
@@ -400,22 +399,22 @@ namespace console_cpp {
         }
 
         switch (bytes.front()) {
-            case 79: {
+            case 'O': {
                 if (bytes.size() > 1) {
-                    switch (*std::next(bytes.begin())) {
-                        case 80: {
+                    switch (bytes[1]) {
+                        case 'P': {
                             keyCode = KeyCode::F1;
                             break;
                         }
-                        case 81: {
+                        case 'Q': {
                             keyCode = KeyCode::F2;
                             break;
                         }
-                        case 82: {
+                        case 'R': {
                             keyCode = KeyCode::F3;
                             break;
                         }
-                        case 83: {
+                        case 'S': {
                             keyCode = KeyCode::F4;
                             break;
                         }
@@ -441,60 +440,52 @@ namespace console_cpp {
         }
 
         switch (bytes.front()) {
-            case 65: {
+            case 'A': {
                 keyCode = KeyCode::UP;
                 break;
             }
-            case 66: {
+            case 'B': {
                 keyCode = KeyCode::DOWN;
                 break;
             }
-            case 67: {
+            case 'C': {
                 keyCode = KeyCode::RIGHT;
                 break;
             }
-            case 68: {
+            case 'D': {
                 keyCode = KeyCode::LEFT;
                 break;
             }
-            case 69: {
+            case 'E': {
                 keyCode = KeyCode::NUMPAD5;
                 break;
             }
-            case 70: {
+            case 'F': {
                 keyCode = KeyCode::END;
                 break;
             }
-            case 72: {
+            case 'H': {
                 keyCode = KeyCode::HOME;
                 break;
             }
-            case 50: {
-                if (bytes.size() > 1) {
-                    if (bytes.size() > 2) {
-                        switch (*std::next(bytes.begin())) {
-                            case 48: {
-                                if (*std::next(bytes.begin(), 2) == 126) {
-                                    keyCode = KeyCode::F9;
-                                }
+            case '1': {
+                if (bytes.size() > 2) {
+                    if (bytes.size() > 4 && bytes[2] == ';' && bytes[3] == '2' && bytes[4] == '~') {
+                        switch (bytes[1]) {
+                            case '5': {
+                                keyCode = KeyCode::F17;
                                 break;
                             }
-                            case 49: {
-                                if (*std::next(bytes.begin(), 2) == 126) {
-                                    keyCode = KeyCode::F10;
-                                }
+                            case '7': {
+                                keyCode = KeyCode::F18;
                                 break;
                             }
-                            case 51: {
-                                if (*std::next(bytes.begin(), 2) == 126) {
-                                    keyCode = KeyCode::F11;
-                                }
+                            case '8': {
+                                keyCode = KeyCode::F19;
                                 break;
                             }
-                            case 52: {
-                                if (*std::next(bytes.begin(), 2) == 126) {
-                                    keyCode = KeyCode::F12;
-                                }
+                            case '9': {
+                                keyCode = KeyCode::F20;
                                 break;
                             }
                             default: {
@@ -502,60 +493,131 @@ namespace console_cpp {
                             }
                         }
                     }
-                    else if (*std::next(bytes.begin()) == 126) {
-                        keyCode = KeyCode::INSERT;
+                    else if (bytes.size() > 3 && bytes[1] == ';' && bytes[2] == '2') {
+                        switch (bytes[3]) {
+                            case 'P': {
+                                keyCode = KeyCode::F13;
+                                break;
+                            }
+                            case 'Q': {
+                                keyCode = KeyCode::F14;
+                                break;
+                            }
+                            case 'R': {
+                                keyCode = KeyCode::F15;
+                                break;
+                            }
+                            case 'S': {
+                                keyCode = KeyCode::F16;
+                                break;
+                            }
+                            default: {
+                                break;
+                            }
+                        }
+                    }
+                    else if (bytes[2] == '~') {
+                        switch (bytes[1]) {
+                            case '5': {
+                                keyCode = KeyCode::F5;
+                                break;
+                            }
+                            case '7': {
+                                keyCode = KeyCode::F6;
+                                break;
+                            }
+                            case '8': {
+                                keyCode = KeyCode::F7;
+                                break;
+                            }
+                            case '9': {
+                                keyCode = KeyCode::F8;
+                                break;
+                            }
+                            default: {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            case '2': {
+                if (bytes.size() > 4 && bytes[2] == ';' && bytes[3] == '2' && bytes[4] == '~') {
+                    switch (bytes[1]) {
+                        case '0': {
+                            keyCode = KeyCode::F21;
+                            break;
+                        }
+                        case '1': {
+                            keyCode = KeyCode::F22;
+                            break;
+                        }
+                        case '3': {
+                            keyCode = KeyCode::F23;
+                            break;
+                        }
+                        case '4': {
+                            keyCode = KeyCode::F24;
+                            break;
+                        }
+                        default: {
+                            break;
+                        }
+                    }
+                }
+                else if (bytes.size() > 1) {
+                    if (bytes[2] == '~') {
+                        if (bytes.size() > 2) {
+                            switch (bytes[1]) {
+                                case '0': {
+                                    keyCode = KeyCode::F9;
+                                    break;
+                                }
+                                case '1': {
+                                    keyCode = KeyCode::F10;
+                                    break;
+                                }
+                                case '3': {
+                                    keyCode = KeyCode::F11;
+                                    break;
+                                }
+                                case '4': {
+                                    keyCode = KeyCode::F12;
+                                    break;
+                                }
+                                default: {
+                                    break;
+                                }
+                            }
+                        }
+                        else {
+                            keyCode = KeyCode::INSERT;
+                        }
                     }
                 }
 
                 break;
             }
-            case 51: {
-                if (bytes.size() > 1 && *std::next(bytes.begin()) == 126) {
+            case '3': {
+                if (bytes.size() > 1 && bytes[1] == '~') {
                     keyCode = KeyCode::DEL;
                 }
+
                 break;
             }
-            case 53: {
-                if (bytes.size() > 1 && *std::next(bytes.begin()) == 126) {
+            case '5': {
+                if (bytes.size() > 1 && bytes[1] == '~') {
                     keyCode = KeyCode::PGUP;
                 }
+
                 break;
             }
-            case 54: {
-                if (bytes.size() > 1 && *std::next(bytes.begin()) == 126) {
+            case '6': {
+                if (bytes.size() > 1 && bytes[1] == '~') {
                     keyCode = KeyCode::PGDN;
                 }
+
                 break;
-            }
-            case 49: {
-                if (bytes.size() > 2) {
-                    switch (*std::next(bytes.begin())) {
-                        case 53: {
-                            if (*std::next(bytes.begin(), 2) == 126) {
-                                keyCode = KeyCode::F5;
-                            }
-                            break;
-                        }
-                        case 55: {
-                            if (*std::next(bytes.begin(), 2) == 126) {
-                                keyCode = KeyCode::F6;
-                            }
-                            break;
-                        }
-                        case 56: {
-                            if (*std::next(bytes.begin(), 2) == 126) {
-                                keyCode = KeyCode::F7;
-                            }
-                            break;
-                        }
-                        case 57: {
-                            if (*std::next(bytes.begin(), 2) == 126) {
-                                keyCode = KeyCode::F8;
-                            }
-                            break;
-                        }
-                    }
-                }
             }
             default: {
                 break;
