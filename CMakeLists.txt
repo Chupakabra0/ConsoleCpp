@@ -72,10 +72,6 @@ endif()
 
 add_compile_definitions(FMT_HEADER_ONLY)
 
-# -------------- 3RD PARTY ----------------
-
-add_subdirectory(3rdparty/fmt)
-
 # -------------- TEST LIB ----------------
 
 add_executable(${MY_APP})
