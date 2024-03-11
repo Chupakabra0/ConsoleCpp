@@ -58,6 +58,8 @@ endif()
 
 message(STATUS "C++ Standard: C++${CMAKE_CXX_STANDARD}")
 
+
+set(COMPILE_EXAMPLE NO)
 set(MY_APP ConsoleCppApplication)
 set(MY_STATIC_LIB ConsoleCppStatic)
 
@@ -74,25 +76,27 @@ add_compile_definitions(FMT_HEADER_ONLY)
 
 # -------------- TEST LIB ----------------
 
-add_executable(${MY_APP})
+if(${COMPILE_EXAMPLE})
+    add_executable(${MY_APP})
 
-target_sources(${MY_APP} PRIVATE
-    example/Main.cpp
-)
+    target_sources(${MY_APP} PRIVATE
+        example/Main.cpp
+    )
 
-target_include_directories(${MY_APP} PRIVATE
-    src/
-    3rdparty/fmt/include
-    3rdparty/widecharwidth/
-)
+    target_include_directories(${MY_APP} PRIVATE
+        src/
+        3rdparty/fmt/include
+        3rdparty/widecharwidth/
+    )
 
-target_link_directories(${MY_APP} PRIVATE
-    ${CMAKE_CURRENT_BINARY_DIR}/${MY_STATIC_LIB}/
-)
+    target_link_directories(${MY_APP} PRIVATE
+        ${CMAKE_CURRENT_BINARY_DIR}/${MY_STATIC_LIB}/
+    )
 
-target_link_libraries(${MY_APP} PRIVATE
-    ${MY_STATIC_LIB}
-)
+    target_link_libraries(${MY_APP} PRIVATE
+        ${MY_STATIC_LIB}
+    )
+endif()
 
 # ---------------- STATIC LIB -----------------
 
