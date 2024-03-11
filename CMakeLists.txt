@@ -100,7 +100,6 @@ add_library(${MY_STATIC_LIB} STATIC)
 
 set(LIB_SOURCES
     src/Helpers.hpp
-    src/TwoDimArrWrapper.hpp
     src/WindowConsole.cpp
     src/WindowConsole.hpp
     src/Font.cpp
