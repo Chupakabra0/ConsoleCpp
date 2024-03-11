@@ -43,4 +43,49 @@ namespace console_cpp {
 
         return result;
     }
+
+    auto U32CharWidth_(char32_t chr) -> size_t {
+        const int width = widechar_wcwidth(chr);
+
+        switch (width) {
+            // Some sensible defaults
+            case widechar_nonprint:
+            case widechar_combining:
+            case widechar_unassigned:
+            case widechar_non_character: {
+                return 0;
+            }
+            case widechar_ambiguous:
+            case widechar_private_use: {
+                return 1;
+            }
+            case widechar_widened_in_9: {
+                // Our renderer supports Unicode 9
+                return 2;
+            }
+            default: {
+                // Use the width widechar_width gave us.
+                return width;
+            }
+        }
+    }
+
+    auto GetStrSize_(const std::string& str) -> size_t {
+        return str.size();
+    }
+
+    auto GetStrSize_(const std::u32string& str) -> size_t {
+        return str.size();
+    }
+
+    auto GetStrSize_(const char* str) -> size_t {
+        return strlen(str);
+    }
+
+    auto GetStrSize_(const char32_t* str) -> size_t {
+        size_t size{};
+        for (; str[size] != '\0'; ++size);
+
+        return size;
+    }
 }
