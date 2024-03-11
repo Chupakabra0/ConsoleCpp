@@ -1,5 +1,7 @@
 #include "Utils.hpp"
 
+#include "widecharwidth/widechar_width.h"
+
 namespace console_cpp {
     auto U32CharToU8Char_(char32_t utf32, const char* buffer) -> char* {
         char* end = const_cast<char*>(buffer);

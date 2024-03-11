@@ -1,6 +1,5 @@
 #pragma once
 #include <ostream>
-#include <widecharwidth/widechar_width.h>
 
 #include <cstring>
 
