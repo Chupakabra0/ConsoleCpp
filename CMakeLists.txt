@@ -58,7 +58,6 @@ endif()
 
 message(STATUS "C++ Standard: C++${CMAKE_CXX_STANDARD}")
 
-
 set(COMPILE_EXAMPLE NO)
 set(MY_APP ConsoleCppApplication)
 set(MY_STATIC_LIB ConsoleCppStatic)
@@ -72,8 +71,6 @@ if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8 /Zc:__cplusplus")
 endif()
 
-add_compile_definitions(FMT_HEADER_ONLY)
-
 # -------------- TEST LIB ----------------
 
 if(${COMPILE_EXAMPLE})
@@ -85,7 +82,6 @@ if(${COMPILE_EXAMPLE})
 
     target_include_directories(${MY_APP} PRIVATE
         src/
-        3rdparty/fmt/include
         3rdparty/widecharwidth/
     )
 
@@ -148,6 +144,5 @@ endif()
 
 target_include_directories(${MY_STATIC_LIB} PRIVATE
     3rdparty/widecharwidth/
-    3rdparty/fmt/include/
 )
 
