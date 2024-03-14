@@ -151,6 +151,3 @@ target_include_directories(${MY_STATIC_LIB} PRIVATE
     3rdparty/fmt/include/
 )
 
-#target_link_libraries(${MY_STATIC_LIB} PRIVATE
-#    fmt::fmt
-#)

@@ -67,9 +67,10 @@ namespace console_cpp {
             this->DisplayStr_(mode->CalcStartStr());
 
             for (int i = 0; str[i] != '\0'; ++i) {
-                auto [x, y] = this->CursorGetLocalXY();
-
-                if (x >= this->GetWidth() || y >= this->GetHeight()) {
+                if (this->CursorGetLocalX() >= this->GetWidth()) {
+                    this->CursorMoveDownToBegin(1);
+                }
+                if (this->CursorGetLocalY() >= this->GetHeight()) {
                     break;
                 }
 
@@ -83,7 +84,7 @@ namespace console_cpp {
                         break;
                     }
                     case U'\b': {
-                        if (x > 0) {
+                        if (this->CursorGetLocalX() > 0) {
                             this->CursorMoveLeft(1);
 
                             if (this->isBufferEnabled_) {
@@ -97,7 +98,7 @@ namespace console_cpp {
                         break;
                     }
                     case U'\t': {
-                        this->Print(std::string(abs(static_cast<long long>(x) % 8 - 8), BLANK_SYMBOL));
+                        this->Print(std::string(abs(static_cast<long long>(this->CursorGetLocalX()) % 8 - 8), BLANK_SYMBOL));
 
                         break;
                     }
@@ -114,9 +115,11 @@ namespace console_cpp {
         auto PrintLine(Str str, T... printMode) -> void {
             this->Print(str, std::forward<const PrintMode*>(printMode)...);
 
-            while (this->CursorGetLocalX() != 0) {
+            while (this->CursorGetLocalX() < this->GetWidth()) {
                 this->DisplayStr_(BLANK_SYMBOL);
             }
+
+            this->CursorMoveDownToBegin(1);
         }
 
         template<IsPrintableString Str, IsPrintModePtrs... T>
@@ -148,7 +151,7 @@ namespace console_cpp {
         template<IsPrintableString Str, IsPrintModePtrs... T>
         auto PrintLeftLine(Str str, T... printMode) -> void {
             this->PrintLeft(str, std::forward<const PrintMode*>(printMode)...);
-            this->PrintLine("");
+            this->CursorMoveDownToBegin(1);
         }
 
         template<IsPrintableString Str, IsPrintModePtrs... T>
@@ -169,9 +172,8 @@ namespace console_cpp {
 
         template<IsPrintableString Str, IsPrintModePtrs... T>
         auto PrintRightLine(Str str, T... printMode) -> void {
-            this->PrintLine("");
-            this->CursorMoveUp(1);
             this->PrintRight(str, std::forward<const PrintMode*>(printMode)...);
+            this->CursorMoveDownToBegin(1);
         }
 
         template<IsPrintableString Str, IsPrintModePtrs... T>
@@ -198,9 +200,8 @@ namespace console_cpp {
 
         template<IsPrintableString Str, IsPrintModePtrs... T>
         auto PrintCenterLine(Str str, T... printMode) -> void {
-            this->PrintLine("");
-            this->CursorMoveUp(1);
             this->PrintCenter(str, std::forward<const PrintMode*>(printMode)...);
+            this->CursorMoveDownToBegin(1);
         }
 
         auto ClearScreen() -> void;

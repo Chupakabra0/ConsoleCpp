@@ -7,9 +7,9 @@ namespace console_cpp {
     public:
         Subwindow() = delete;
 
-        template<IsPrintModePtrs... T>
-        explicit Subwindow(WindowConsole& window, size_t x, size_t y, size_t width, size_t height, const Delim& delim, T... printMode)
-            : WindowConsole(window.GetOutputStream(), width, height, std::forward<ConsoleMode*>(printMode)...), buffer_(std::move(std::make_shared<std::string>())),
+        template<IsConsoleModePtrs... T>
+        explicit Subwindow(WindowConsole& window, size_t x, size_t y, size_t width, size_t height, const Delim& delim)
+            : WindowConsole(window.GetOutputStream(), width, height), buffer_(std::move(std::make_shared<std::string>())),
               delim_(delim), parentWindow_(window) {
             this->positionX_ = x;
             this->positionY_ = y;

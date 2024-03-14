@@ -1,7 +1,4 @@
 #include "WindowConsole.hpp"
-#include "WindowConsole.hpp"
-#include "WindowConsole.hpp"
-#include "WindowConsole.hpp"
 
 #include "Print.hpp"
 #include "Utils.hpp"
@@ -124,6 +121,10 @@ namespace console_cpp {
             this->CursorMoveRight(1);
             
             if (this->CursorGetLocalX() == this->GetWidth()) {
+                if (this->CursorGetLocalY() == this->GetHeight()) {
+                    return;
+                }
+
                 this->CursorMoveDown(1);
                 this->CursorMoveXTo(0);
             }
@@ -154,6 +155,10 @@ namespace console_cpp {
             this->CursorMoveLeft(1);
             
             if (this->CursorGetLocalX() == temp) {
+                if (this->CursorGetLocalY() == 0) {
+                    return;
+                }
+
                 this->CursorMoveUp(1);
                 this->CursorMoveXTo(this->GetWidth() - 1);
             }
@@ -285,7 +290,8 @@ namespace console_cpp {
             PrintUnicode_(this->out_, std::u32string(1, chr));
         }
 
-        this->CursorMoveRightWithOverflow(chrWidth);
+        //this->CursorMoveRightWithOverflow(chrWidth);
+        this->CursorMoveRight(chrWidth);
     }
 
     auto WindowConsole::DisplayStr_(char chr) -> void {
@@ -296,6 +302,7 @@ namespace console_cpp {
             PrintUnicode_(this->out_, std::string(1, chr));
         }
 
-        this->CursorMoveRightWithOverflow(1);
+        //this->CursorMoveRightWithOverflow(1);
+        this->CursorMoveRight(1);
     }
 }
