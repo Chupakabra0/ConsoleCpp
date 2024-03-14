@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/ConsoleCppApplication.dir/example/Main.cpp.o -o ConsoleCppApplication   -L/mnt/d/DevProjects/ConsoleCpp/ConsoleCppStatic  -Wl,-rpath,/mnt/d/DevProjects/ConsoleCpp/ConsoleCppStatic libConsoleCppStatic.a 
