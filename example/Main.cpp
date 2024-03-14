@@ -255,6 +255,6 @@ auto WindowTest() -> void {
 }
 
 int main() {
-    KeyboardTest();
+    TestFormating();
     return EXIT_SUCCESS;
 }
